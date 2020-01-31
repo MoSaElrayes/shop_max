@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:shop_app_max_flutter/widgets/product_item.dart';
+
 
 import 'cart.dart';
 
