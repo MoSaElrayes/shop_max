@@ -2,23 +2,23 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:shop_app_max_flutter/model/http_exception.dart';
+import 'package:shop_app_max_flutter/providers/url_file.dart';
 
 class Product with ChangeNotifier {
   final String id;
   final String title;
   final String description;
-  final String imageUrl;
   final double price;
+  final String imageUrl;
   bool isFavorite;
 
   Product({
     @required this.id,
     @required this.title,
     @required this.description,
-    @required this.imageUrl,
     @required this.price,
-    this.isFavorite=false,
+    @required this.imageUrl,
+    this.isFavorite = false,
   });
 
   void _setFavValue(bool newValue) {
@@ -26,20 +26,23 @@ class Product with ChangeNotifier {
     notifyListeners();
   }
 
-  void toggleFavoriteStatus() async {
-    final oldStateFavorite = isFavorite;
+  Future<void> toggleFavoriteStatus() async {
+    final oldStatus = isFavorite;
     isFavorite = !isFavorite;
     notifyListeners();
-    final url = "https://shop-flutter-9764c.firebaseio.com/products/$id.json";
+    final url = urlDataBase + 'products/$id.json' ;
     try {
       final response = await http.patch(
-          url, body: json.encode({'isFavorite': isFavorite}));
+        url,
+        body: json.encode({
+          'isFavorite': isFavorite,
+        }),
+      );
       if (response.statusCode >= 400) {
-        _setFavValue(oldStateFavorite);
+        _setFavValue(oldStatus);
       }
     } catch (error) {
-      print(error);
-      _setFavValue(oldStateFavorite);
+      _setFavValue(oldStatus);
     }
   }
 }
